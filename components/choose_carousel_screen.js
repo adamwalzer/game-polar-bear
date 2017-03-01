@@ -1,0 +1,211 @@
+import CarouselCannon from 'shared/components/carousel_cannon/0.1';
+import Randomizer from 'shared/components/randomizer/0.1';
+import Score from 'shared/components/score/0.1';
+
+export default function (props, ref, key) {
+    return (
+        <skoash.Screen
+            {...props}
+            ref={ref}
+            key={key}
+            id="choose-carousel"
+        >
+            <CarouselCannon
+                ref="carousel-cannon"
+                completeOnStart={true}
+                complete={true}
+                onSelect={function (target) {
+                    var score;
+                    if (typeof this.refs.reveal.open === 'function') {
+                        this.open(`${target.props.name}-vo`);
+                    }
+                    if (target.props.name === 'polar') {
+                        score = _.get(props, 'data.score.correct', 0);
+                        if (score < 5) score += 1;
+
+                        this.updateGameState({
+                            path: 'score',
+                            data: {
+                                correct: score
+                            }
+                        });
+                    }
+                }}
+                carouselBin={
+                  <Randomizer
+                    ref="randomizer"
+                    completeOnStart={true}
+                    checkComplete={false}
+                    bin={[
+                        <skoash.Image
+                            name="fox"
+                            src={`${CMWN.MEDIA.IMAGE}carousel-slide-1.png`}
+                        />,
+                        <skoash.Image
+                            name="dog"
+                            src={`${CMWN.MEDIA.IMAGE}carousel-slide-2.png`}
+                        />,
+                        <skoash.Image
+                            name="polar"
+                            src={`${CMWN.MEDIA.IMAGE}carousel-slide-7.png`}
+                        />,
+                        <skoash.Image
+                            name="cat"
+                            src={`${CMWN.MEDIA.IMAGE}carousel-slide-3.png`}
+                        />,
+                        <skoash.Image
+                            name="ermine"
+                            src={`${CMWN.MEDIA.IMAGE}carousel-slide-4.png`}
+                        />,
+                        <skoash.Image
+                            name="goat"
+                            src={`${CMWN.MEDIA.IMAGE}carousel-slide-5.png`}
+                        />,
+                        <skoash.Image
+                            name="peacock"
+                            src={`${CMWN.MEDIA.IMAGE}carousel-slide-6.png`}
+                        />,
+                        <skoash.Image
+                            name="polar"
+                            src={`${CMWN.MEDIA.IMAGE}carousel-slide-7.png`}
+                        />,
+                        <skoash.Image
+                            name="seal"
+                            src={`${CMWN.MEDIA.IMAGE}carousel-slide-8.png`}
+                        />,
+                        <skoash.Image
+                            name="hare"
+                            src={`${CMWN.MEDIA.IMAGE}carousel-slide-9.png`}
+                        />,
+                        <skoash.Image
+                            name="polar"
+                            src={`${CMWN.MEDIA.IMAGE}carousel-slide-7.png`}
+                        />,
+                    ]}
+                  />
+                }
+                cannonBall={
+                  <skoash.Image src={`${CMWN.MEDIA.IMAGE}cannon-ball.png`} />
+                }
+                autoCloseReveal
+                revealList={[
+                    <skoash.Image
+                        data-ref="fox"
+                        className="animated"
+                        src={`${CMWN.MEDIA.IMAGE}reveal-1.png`}
+                        complete={true}
+                    />,
+                    <skoash.Image
+                        data-ref="seal"
+                        className="animated"
+                        src={`${CMWN.MEDIA.IMAGE}reveal-5.png`}
+                        complete={true}
+                    />,
+                    <skoash.Image
+                        data-ref="ermine"
+                        className="animated"
+                        src={`${CMWN.MEDIA.IMAGE}reveal-4.png`}
+                        complete={true}
+                    />,
+                    <skoash.Image
+                        data-ref="goat"
+                        className="animated"
+                        src={`${CMWN.MEDIA.IMAGE}reveal-6.png`}
+                        complete={true}
+                    />,
+                    <skoash.Image
+                        data-ref="peacock"
+                        className="animated"
+                        src={`${CMWN.MEDIA.IMAGE}reveal-7.png`}
+                        complete={true}
+                    />,
+                    <skoash.Image
+                        data-ref="dog"
+                        className="animated"
+                        src={`${CMWN.MEDIA.IMAGE}reveal-2.png`}
+                        complete={true}
+                    />,
+                    <skoash.Image
+                        data-ref="cat"
+                        className="animated"
+                        src={`${CMWN.MEDIA.IMAGE}reveal-3.png`}
+                        complete={true}
+                    />,
+                    <skoash.Image
+                        data-ref="hare"
+                        className="animated"
+                        src={`${CMWN.MEDIA.IMAGE}reveal-9.png`}
+                        complete={true}
+                    />,
+                    <skoash.Image
+                        data-ref="polar"
+                        className="animated"
+                        src={`${CMWN.MEDIA.IMAGE}reveal-8.png`}
+                    />,
+                ]}
+                revealAssets={[
+                    <skoash.Audio
+                        ref="fox-vo"
+                        type="voiceOver"
+                        src={`${CMWN.MEDIA.VO}vo-1.mp3`}
+                        complete={true}
+                    />,
+                    <skoash.Audio
+                        ref="seal-vo"
+                        type="voiceOver"
+                        src={`${CMWN.MEDIA.VO}vo-2.mp3`}
+                        complete={true}
+                    />,
+                    <skoash.Audio
+                        ref="ermine-vo"
+                        type="voiceOver"
+                        src={`${CMWN.MEDIA.VO}vo-3.mp3`}
+                        complete={true}
+                    />,
+                    <skoash.Audio
+                        ref="goat-vo"
+                        type="voiceOver"
+                        src={`${CMWN.MEDIA.VO}vo-4.mp3`}
+                        complete={true}
+                    />,
+                    <skoash.Audio
+                        ref="peacock-vo"
+                        type="voiceOver"
+                        src={`${CMWN.MEDIA.VO}vo-5.mp3`}
+                        complete={true}
+                    />,
+                    <skoash.Audio
+                        ref="dog-vo"
+                        type="voiceOver"
+                        src={`${CMWN.MEDIA.VO}vo-6.mp3`}
+                        complete={true}
+                    />,
+                    <skoash.Audio
+                        ref="cat-vo"
+                        type="voiceOver"
+                        src={`${CMWN.MEDIA.VO}vo-7.mp3`}
+                        complete={true}
+                    />,
+                    <skoash.Audio
+                        ref="hare-vo"
+                        type="voiceOver"
+                        src={`${CMWN.MEDIA.VO}vo-8.mp3`}
+                        complete={true}
+                    />,
+                    <skoash.Audio
+                        ref="polar-vo"
+                        type="voiceOver"
+                        src={`${CMWN.MEDIA.VO}vo-9.mp3`}
+                    />
+                ]}
+            />
+            <Score
+                ref="score"
+                max={5}
+                correct={_.get(props, 'data.score.correct', 0)}
+                checkComplete={false}
+                complete={_.get(props, 'data.score.correct', 0) === 5}
+            />
+        </skoash.Screen>
+    );
+}

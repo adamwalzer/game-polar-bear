@@ -1,0 +1,1709 @@
+@import 'variables';
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body,
+body > div,
+body > div > div {
+    margin: 0;
+    cursor: auto;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    user-select: none;
+    user-drag: none;
+}
+
+html {
+    font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, sans-serif;
+}
+
+body > div > div {
+    position: relative;
+    margin: auto;
+    background: url('#{$image}background.png') bottom center no-repeat;
+    background-size: cover;
+    width: 960px;
+    height: 540px;
+    color: $white;
+    font-size: 36px;
+}
+
+button {
+    margin: 0;
+    outline: none;
+    border: 0;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 0;
+
+    color: transparent;
+    font-family: inherit;
+    font-size: inherit;
+
+    &.close {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 2;
+        margin: 10px;
+        background: url('#{$image}button-quit.png');
+        background-size: contain;
+        width: 40px;
+        height: 40px;
+
+        &:hover {
+            background: url('#{$image}button-quit-hover.png');
+            background-size: contain;
+        }
+    }
+
+    &.next-screen,
+    &.prev-screen {
+        width: 55px;
+        height: 55px;
+    }
+
+    &.next-screen {
+        background: url('#{$image}button-next.png');
+        background-size: contain;
+
+        &:hover {
+            background: url('#{$image}button-next-hover.png');
+            background-size: contain;
+        }
+    }
+
+    &.prev-screen {
+        background: url('#{$image}button-prev.png');
+        background-size: contain;
+
+        &:hover {
+            background: url('#{$image}button-prev-hover.png');
+            background-size: contain;
+        }
+    }
+
+    &.close-reveal {
+        background-position: -225px 420px;
+        width: 55px;
+        height: 50px;
+
+        &.ENABLED:hover {
+            background-position: -225px 676px;
+        }
+    }
+
+    &.quit-yes {
+        background-position: -1830px 495px;
+        width: 230px;
+        height: 230px;
+
+        &:hover {
+            background-position: -1830px 251px;
+        }
+    }
+
+    &.quit-no {
+        background-position: -2080px 495px;
+        width: 230px;
+        height: 230px;
+
+        &:hover {
+            background-position: -2080px 251px;
+        }
+    }
+}
+
+body.DEMO .reveal-component .items li div .close-reveal {
+    opacity: 1;
+    cursor: pointer;
+
+    &:hover {
+        background-position: -225px 676px;
+    }
+}
+
+h2 {
+    font-size: 40px;
+}
+
+h3 {
+    margin: 0;
+    font-size: 20px;
+}
+
+p {
+    margin: 0;
+    font-size: 28px;
+}
+
+// preload game assets
+#asset-bin {
+    display: none;
+}
+
+.canvas-src { display: none; }
+
+.screen {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateX(100%);
+    transition: opacity 1s, transform .5s;
+    opacity: 0;
+    margin-top: -270px;
+    width: 960px;
+    height: 540px;
+
+    &:not(.COMPLETE) {
+        button {
+            &.next-screen {
+                cursor: auto;
+            }
+        }
+    }
+}
+
+.screen.OPEN {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.screen.READY {
+    display: block;
+}
+
+.screen.LEAVE {
+    transform: translateX(-100%);
+    opacity: 0;
+}
+
+.screen .next-screen,
+.screen .prev-screen {
+    position: absolute;
+    bottom: 42%;
+    visibility: visible;
+    z-index: 2;
+
+}
+
+.screen .next-screen {
+    right: 11%;
+    transition: visibility 1s, opacity 1s;
+    visibility: hidden;
+    opacity: 0;
+}
+
+.screen.GATED .next-screen {
+    visibility: hidden;
+    opacity: 0;
+    z-index: -1;
+    cursor: auto;
+}
+
+.pl-game.DEMO .screen .next-screen,
+.screen.COMPLETE .next-screen {
+    transform: rotate(0deg);
+    visibility: visible;
+    opacity: 1;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.pl-game.MENU.MENU-quit .menu .close {
+    visibility: hidden;
+}
+
+.screen .prev-screen {
+    left: 12%;
+}
+
+// the following css is specific to this game
+
+.dropzone-reveal ul {
+    list-style-type: none;
+}
+
+
+.reveal {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: opacity .5s, z-index 0s .6s;
+    opacity: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+
+    div {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        margin-top: -120px;
+        background-size: 100% 100%;
+        width: 100%;
+        height: 240px;
+    }
+
+    ul {
+        margin: 0;
+        height: 100%;
+
+        li {
+            margin: 0;
+            height: 100%;
+
+            p {
+                display: block;
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 100%;
+                text-align: center;
+                color: $black;
+            }
+
+        }
+    }
+
+    .close-reveal {
+        position: absolute;
+        right: 5px;
+        bottom: 10px;
+        transition: opacity 1s;
+        opacity: 1;
+        cursor: pointer;
+    }
+
+    &.OPEN {
+        transition: opacity .5s;
+        opacity: 1;
+        z-index: 1;
+    }
+}
+
+.VOICE-OVER,
+.SFX {
+    .draggable,
+    .selectable-canvas,
+    .selectable > * {
+        pointer-events: none;
+    }
+}
+
+.video {
+    background: url('#{$frame}fr-2.png') center center no-repeat;
+    background-size: 100% 100%;
+
+    video {
+        margin: 15px 15px 34px;
+    }
+}
+
+#title {
+    img {
+        position: absolute;
+
+        &.title {
+            top: 8%;
+            left: 15%;
+            animation-name: slideInRight;
+            animation-delay: 1.5s;
+            width: 70%;
+        }
+    }
+
+    button {
+        &.next-screen {
+            right: 3%;
+            bottom: 1%;
+            background: url('#{$image}button-play.png');
+            background-size: contain;
+            width: 120px;
+            height: 68px;
+
+            &:hover {
+                background: url('#{$image}button-play-hover.png');
+                background-size: contain;
+            }
+        }
+
+        &.prev-screen {
+            display: none;
+        }
+    }
+
+    &.CLOSE {
+        transform: translateX(0%);
+    }
+}
+
+#info-majestic {
+    img {
+        position: absolute;
+
+        &.bear {
+            right: 13px;
+            bottom: 11px;
+            width: 50%;
+        }
+    }
+
+    .frame {
+        position: absolute;
+        top: 15%;
+        left: 14%;
+        background: url('#{$frame}bg-slide.png');
+        background-size: cover;
+        width: 72%;
+        height: 73%;
+
+        h3 {
+            position: absolute;
+            left: 3%;
+            width: 50%;
+            text-align: center;
+            color: $black;
+
+            &:nth-of-type(1) {
+                top: 20%;
+            }
+
+            &:nth-of-type(2) {
+                top: 48%;
+            }
+        }
+    }
+}
+
+#question-what-color {
+    img {
+        position: absolute;
+
+        &.bear {
+            bottom: 10px;
+            left: 13px;
+            width: 53.5%;
+        }
+    }
+
+    .frame {
+        position: absolute;
+        top: 15%;
+        left: 14%;
+        background: url('#{$frame}bg-slide.png');
+        background-size: cover;
+        width: 72%;
+        height: 73%;
+
+        h3 {
+            position: absolute;
+            top: 44%;
+            left: 53%;
+            width: 50%;
+            text-align: center;
+            color: $black;
+        }
+    }
+}
+
+#choose-what-color {
+    img {
+        position: absolute;
+
+        &.bear {
+            bottom: 10px;
+            left: 13px;
+            width: 53.5%;
+        }
+    }
+
+    .frame {
+        position: absolute;
+        top: 15%;
+        left: 14%;
+        background: url('#{$frame}bg-slide.png');
+        background-size: cover;
+        width: 72%;
+        height: 73%;
+
+        h3 {
+            position: absolute;
+            top: 44%;
+            left: 53%;
+            width: 50%;
+            text-align: center;
+            color: $black;
+        }
+    }
+
+    .selectable-reveal {
+        .selectable {
+            position: absolute;
+            top: -9%;
+            left: 70%;
+            width: 30%;
+            height: 100%;
+
+
+            li {
+                position: absolute;
+                background: url('#{$image}button-radio.png');
+                background-repeat: no-repeat;
+                background-position: top left;
+                background-size: contain;
+                padding-left: 46px;
+                width: 70%;
+                height: 10%;
+                color: $black;
+
+                &.white {
+                    top: 25%;
+                }
+
+                &.plaid {
+                    top: 45%;
+                }
+
+                &.clear {
+                    top: 65%;
+                }
+
+                &.SELECTED {
+                    background: url('#{$image}button-radio-selected.png');
+                    background-repeat: no-repeat;
+                    background-position: top left;
+                    background-size: contain;
+                }
+            }
+        }
+    }
+}
+
+#answer-what-color {
+    img {
+        position: absolute;
+
+        &.bear {
+            bottom: 10px;
+            left: 13px;
+            width: 53.5%;
+        }
+    }
+
+    .frame {
+        position: absolute;
+        top: 15%;
+        left: 14%;
+        background: url('#{$frame}bg-slide.png');
+        background-size: cover;
+        width: 72%;
+        height: 73%;
+
+        h3 {
+            position: absolute;
+            top: 35%;
+            left: 53%;
+            width: 50%;
+            text-align: center;
+            color: $black;
+        }
+    }
+}
+
+#question-where {
+    img {
+        position: absolute;
+
+        &.bear {
+            bottom: 10px;
+            left: 13px;
+            width: 50.5%;
+        }
+    }
+
+    .frame {
+        position: absolute;
+        top: 15%;
+        left: 14%;
+        background: url('#{$frame}bg-slide.png');
+        background-size: cover;
+        width: 72%;
+        height: 73%;
+
+        h3 {
+            position: absolute;
+            top: 44%;
+            left: 53%;
+            width: 50%;
+            text-align: center;
+            color: $black;
+        }
+    }
+}
+
+#choose-where {
+    .selectable-reveal > div {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+
+    canvas {
+        display: none;
+        position: absolute;
+        z-index: 2;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+    }
+
+    .map {
+        position: absolute;
+        top: 1%;
+        left: 0;
+        background: url('#{$image}img-9-1.png');
+        background-repeat: no-repeat;
+        background-position: 221px 0;
+        background-size: 575px 575px;
+        width: 100%;
+        height: 100%;
+
+        .selectable-reveal {
+            .selectable-canvas {
+                position: absolute;
+                left: 23%;
+                margin: 0;
+                padding: 0;
+                width: 60%;
+                height: 100%;
+                list-style-type: none;
+
+                li {
+                    position: static;
+                    margin: 0;
+                    padding: 0;
+
+                    img {
+                        opacity: 0;
+                        width: 100%;
+
+                        // scss-lint:disable NestingDepth
+                        &.border,
+                        &.labels {
+                            opacity: 1;
+                            z-index: 1;
+                            width: 100%;
+                        }
+                        // scss-lint:enable NestingDepth
+                    }
+
+                    &.HIGHLIGHTED {
+                        // scss-lint:disable NestingDepth
+                        img {
+                            opacity: 1;
+                        }
+                        // scss-lint:enable NestingDepth
+                    }
+                }
+            }
+        }
+    }
+}
+
+#info-carousel {
+    img {
+        position: absolute;
+
+        &.banner {
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+        }
+    }
+
+    .frame {
+        position: absolute;
+        top: 15%;
+        left: 14%;
+        background: url('#{$frame}bg-slide.png');
+        background-size: cover;
+        width: 72%;
+        height: 73%;
+
+        h3 {
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50%;
+            text-align: center;
+            color: $black;
+        }
+    }
+}
+
+#choose-carousel {
+    .next-screen,
+    .prev-screen {
+        bottom: 18%;
+    }
+
+    @keyframes reload {
+        0% {
+            opacity: 0;
+        }
+
+        67% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    .cannon {
+        display: inline-block;
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        background-image: url('#{$image}cannon-background.png');
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: contain;
+        width: 100%;
+        height: 180px;
+        overflow: hidden;
+        text-align: center;
+
+
+        &.FIRE {
+            .ball {
+                /**
+                 *    Normaly I would define the transition on the default rule but this way
+                 *    the animation will not play when the 'LAUNCHED' flag is removed.
+                 */
+                transform: translateY(-100px) scale(.3);
+                transition: transform .5s cubic-bezier(0, 0, .2, 1);
+            }
+        }
+
+        &.RELOAD {
+            .ball {
+                animation: reload 3s;
+            }
+        }
+
+        .ball {
+            transform: translateY(100px);
+            cursor: pointer;
+            width: 90px;
+        }
+    }
+
+    .carousel {
+        position: absolute;
+        top: 15%;
+        left: 10%;
+        width: 80%;
+        overflow: hidden;
+        white-space: nowrap;
+
+        > * {
+            display: inline-block;
+            position: relative;
+            transform: translate3d(0, 0, 0);
+            transition: margin 0s;
+            margin-right: 45px;
+            margin-left: 0;
+            width: 250px;
+            height: 250px;
+            max-height: 100%;
+            box-sizing: border-box;
+        }
+
+        .LEAVE {
+            transition: margin 1s;
+            margin-left: -274px;
+        }
+    }
+
+    .randomizer {
+        img {
+            visibility: hidden;
+        }
+    }
+
+    .score {
+        position: absolute;
+        top: 1%;
+        left: 2%;
+        background: url('#{$sprite}background.png');
+        background-position: -6px 0;
+        background-size: cover;
+        width: 29%;
+        height: 16%;
+
+        &.score-1 {
+            background-position: -294px 0;
+        }
+
+        &.score-2 {
+            background-position: -582px 0;
+        }
+
+        &.score-3 {
+            background-position: -870px 0;
+        }
+
+        &.score-4 {
+            background-position: -1159px 0;
+        }
+
+        &.score-5 {
+            background-position: -1446px 0;
+        }
+
+        span {
+            display: none;
+        }
+    }
+
+    .reveal {
+        display: inline-block;
+
+        img {
+            position: absolute;
+            top: 50%;
+            left: 35%;
+            opacity: 0;
+            width: 30%;
+        }
+
+        &.OPEN {
+            opacity: 1;
+
+            img.OPEN {
+                animation-name: fadeOutUp;
+                animation-delay: 1s;
+                opacity: 1;
+            }
+        }
+    }
+}
+
+#info-experiment {
+    img {
+        position: absolute;
+
+        &.banner {
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+        }
+    }
+
+    .frame {
+        position: absolute;
+        top: 15%;
+        left: 14%;
+        background: url('#{$frame}bg-slide.png');
+        background-size: cover;
+        width: 72%;
+        height: 73%;
+
+        h3 {
+            position: absolute;
+            top: 65%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50%;
+            text-align: center;
+            color: $black;
+            font-size: 30px;
+        }
+    }
+}
+
+#info-temperature {
+    img {
+        position: absolute;
+
+        &.bear {
+            bottom: 11px;
+            left: 13px;
+            width: 42%;
+        }
+    }
+
+    .frame {
+        position: absolute;
+        top: 15%;
+        left: 14%;
+        background: url('#{$frame}bg-slide.png');
+        background-size: cover;
+        width: 72%;
+        height: 73%;
+
+        h3 {
+            position: absolute;
+            top: 30%;
+            left: 46%;
+            width: 50%;
+            text-align: center;
+            color: $black;
+            font-size: 25px;
+        }
+    }
+}
+
+#info-layer {
+    img {
+        position: absolute;
+
+        &.bear {
+            top: -33%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 63%;
+        }
+    }
+
+    .frame {
+        position: absolute;
+        top: 15%;
+        left: 14%;
+        background: url('#{$frame}bg-slide.png');
+        background-size: cover;
+        width: 72%;
+        height: 73%;
+
+        h3 {
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            text-align: center;
+            color: $black;
+            font-size: 25px;
+        }
+    }
+}
+
+#experiment-needed {
+    img {
+        position: absolute;
+
+        &.banner {
+            top: -12%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 63%;
+        }
+    }
+
+    .frame {
+        position: absolute;
+        top: 15%;
+        left: 14%;
+        background: url('#{$frame}bg-slide.png');
+        background-size: cover;
+        width: 72%;
+        height: 73%;
+
+        .item {
+            width: 15%;
+
+            &.bowl {
+                bottom: 65%;
+                left: 20%;
+            }
+
+            &.ice {
+                bottom: 65%;
+                left: 42%;
+            }
+
+            &.water {
+                bottom: 65%;
+                left: 66%;
+            }
+
+            &.oil {
+                bottom: 24%;
+                left: 20%;
+            }
+
+            &.bag {
+                bottom: 24%;
+                left: 66%;
+            }
+        }
+
+        p {
+            position: absolute;
+            width: 60%;
+            text-align: center;
+            color: $black;
+            font-size: 20px;
+
+            &.bowl {
+                top: 40%;
+                left: -3%;
+            }
+
+            &.ice {
+                top: 40%;
+                left: 19%;
+            }
+
+            &.water {
+                top: 40%;
+                left: 42%;
+            }
+
+            &.oil {
+                top: 80%;
+                left: -2%;
+            }
+
+            &.bag {
+                top: 80%;
+                left: 43%;
+            }
+        }
+    }
+
+    .print {
+        position: absolute;
+        bottom: 3%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: url('#{$image}img-15-7b.png') no-repeat center;
+        background-size: 100%;
+        cursor: pointer;
+        width: 23%;
+        height: 7%;
+
+        &:hover {
+            background-image: url('#{$image}img-15-7a.png');
+        }
+    }
+}
+
+#experiment-step-one {
+    img {
+        position: absolute;
+
+        &.banner {
+            top: -12%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40%;
+        }
+    }
+
+    .frame {
+        position: absolute;
+        top: 15%;
+        left: 14%;
+        background: url('#{$frame}bg-slide.png');
+        background-size: cover;
+        width: 72%;
+        height: 73%;
+
+        .item {
+            width: 15%;
+
+            &.bowl {
+                bottom: 55%;
+                left: 20%;
+            }
+
+            &.ice {
+                bottom: 55%;
+                left: 42%;
+            }
+
+            &.water {
+                bottom: 55%;
+                left: 66%;
+            }
+        }
+
+        p {
+            position: absolute;
+            width: 60%;
+            text-align: center;
+            color: $black;
+            font-size: 20px;
+
+            &.bowl {
+                top: 50%;
+                left: -3%;
+            }
+
+            &.ice {
+                top: 50%;
+                left: 19%;
+            }
+
+            &.water {
+                top: 50%;
+                left: 42%;
+            }
+        }
+
+        h3 {
+            position: absolute;
+            top: 70%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            text-align: center;
+            color: $black;
+            font-size: 25px;
+        }
+    }
+}
+
+#experiment-step-two {
+    img {
+        position: absolute;
+
+        &.banner {
+            top: -12%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 42%;
+        }
+    }
+
+    .frame {
+        position: absolute;
+        top: 15%;
+        left: 14%;
+        background: url('#{$frame}bg-slide.png');
+        background-size: cover;
+        width: 72%;
+        height: 73%;
+
+        .item {
+            width: 15%;
+
+            &.oil {
+                bottom: 65%;
+                left: 20%;
+            }
+
+            &.bag {
+                bottom: 65%;
+                left: 66%;
+            }
+        }
+
+        p {
+            position: absolute;
+            width: 60%;
+            text-align: center;
+            color: $black;
+            font-size: 20px;
+
+            &.oil {
+                top: 40%;
+                left: -3%;
+            }
+
+            &.bag {
+                top: 40%;
+                left: 42%;
+            }
+
+            &.description {
+                top: 75%;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+
+        h3 {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            text-align: center;
+            color: $black;
+            font-size: 25px;
+        }
+    }
+}
+
+#experiment-step-three {
+    img {
+        position: absolute;
+
+        &.banner {
+            top: -12%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 45%;
+        }
+    }
+
+    .frame {
+        position: absolute;
+        top: 15%;
+        left: 14%;
+        background: url('#{$frame}bg-slide.png');
+        background-size: cover;
+        width: 72%;
+        height: 73%;
+
+
+        p {
+            position: absolute;
+            top: 44%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            text-align: center;
+            color: $black;
+            font-size: 20px;
+        }
+
+        h3 {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            text-align: center;
+            color: $black;
+            font-size: 25px;
+        }
+    }
+}
+
+#experiment-step-four {
+    img {
+        position: absolute;
+
+        &.banner {
+            top: -12%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 45%;
+        }
+    }
+
+    .frame {
+        position: absolute;
+        top: 15%;
+        left: 14%;
+        background: url('#{$frame}bg-slide.png');
+        background-size: cover;
+        width: 72%;
+        height: 73%;
+
+
+        p {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            text-align: center;
+            color: $black;
+            font-size: 20px;
+        }
+
+        h3 {
+            position: absolute;
+            top: 36%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            text-align: center;
+            color: $black;
+            font-size: 25px;
+        }
+    }
+}
+
+#experiment-which-hand {
+    img {
+        position: absolute;
+
+        &.banner {
+            top: -12%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+        }
+    }
+
+    .frame {
+        position: absolute;
+        top: 15%;
+        left: 14%;
+        background: url('#{$frame}bg-slide.png');
+        background-size: cover;
+        width: 72%;
+        height: 73%;
+
+        .left {
+            position: absolute;
+            bottom: 10%;
+            background-image: url('#{$image}left-a.png');
+            background-repeat: no-repeat;
+            background-position: bottom right;
+            background-size: 95%;
+            width: 50%;
+            height: 100%;
+
+            &:hover,
+            &.SELECTED {
+                &::after {
+                    position: absolute;
+                    background-image: url('#{$image}left-b.png');
+                    background-repeat: no-repeat;
+                    background-position: bottom right;
+                    background-size: 95%;
+                    width: 100%;
+                    height: 100%;
+                    content: '';
+                }
+            }
+        }
+
+        .right {
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            background-image: url('#{$image}right-a.png');
+            background-repeat: no-repeat;
+            background-position: bottom left;
+            background-size: 95%;
+            width: 50%;
+            height: 100%;
+
+            &:hover,
+            &.SELECTED {
+                &::after {
+                    position: absolute;
+                    background-image: url('#{$image}right-b.png');
+                    background-repeat: no-repeat;
+                    background-position: bottom left;
+                    background-size: 95%;
+                    width: 100%;
+                    height: 100%;
+                    content: '';
+                }
+            }
+        }
+    }
+}
+
+#experiment-why-warmer {
+    img {
+        position: absolute;
+
+        &.banner {
+            top: -12%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+        }
+    }
+
+    .frame {
+        position: absolute;
+        top: 15%;
+        left: 14%;
+        background: url('#{$frame}bg-slide.png');
+        background-size: cover;
+        width: 72%;
+        height: 73%;
+
+        .oil {
+            position: absolute;
+            bottom: 10%;
+            background-image: url('#{$image}shortening-a.png');
+            background-repeat: no-repeat;
+            background-position: right 150px;
+            background-size: 80%;
+            width: 50%;
+            height: 100%;
+
+            &:hover,
+            &.SELECTED {
+                &::after {
+                    position: absolute;
+                    background-image: url('#{$image}shortening-b.png');
+                    background-repeat: no-repeat;
+                    background-position: right 150px;
+                    background-size: 80%;
+                    width: 100%;
+                    height: 100%;
+                    content: '';
+                }
+            }
+        }
+
+        .bag {
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            background-image: url('#{$image}bag-a.png');
+            background-repeat: no-repeat;
+            background-position: bottom left;
+            background-size: 80%;
+            width: 50%;
+            height: 100%;
+
+            &:hover,
+            &.SELECTED {
+                &::after {
+                    position: absolute;
+                    background-image: url('#{$image}bag-b.png');
+                    background-repeat: no-repeat;
+                    background-position: bottom left;
+                    background-size: 80%;
+                    width: 100%;
+                    height: 100%;
+                    content: '';
+                }
+            }
+        }
+    }
+}
+
+#experiment-how-warmer {
+    img {
+        position: absolute;
+
+        &.banner {
+            top: 38%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70%;
+        }
+    }
+
+    .frame {
+        position: absolute;
+        top: 15%;
+        left: 14%;
+        background: url('#{$frame}bg-slide.png');
+        background-size: cover;
+        width: 72%;
+        height: 73%;
+
+        .cold {
+            position: absolute;
+            bottom: 5%;
+            background-image: url('#{$image}cold-a.png');
+            background-repeat: no-repeat;
+            background-position: 100px 238px;
+            background-size: 55%;
+            width: 50%;
+            height: 100%;
+
+            &:hover,
+            &.SELECTED {
+                &::after {
+                    position: absolute;
+                    background-image: url('#{$image}cold-b.png');
+                    background-repeat: no-repeat;
+                    background-position: 100px 237px;
+                    background-size: 55%;
+                    width: 100%;
+                    height: 100%;
+                    content: '';
+                }
+            }
+        }
+
+        .warm {
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            background-image: url('#{$image}warm-a.png');
+            background-repeat: no-repeat;
+            background-position: 50px 250px;
+            background-size: 55%;
+            width: 50%;
+            height: 100%;
+
+            &:hover,
+            &.SELECTED {
+                &::after {
+                    position: absolute;
+                    background-image: url('#{$image}warm-b.png');
+                    background-repeat: no-repeat;
+                    background-position: 45px 250px;
+                    background-size: 55%;
+                    width: 100%;
+                    height: 100%;
+                    content: '';
+                }
+            }
+        }
+
+        h3 {
+            position: absolute;
+            top: 12%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            text-align: center;
+            color: $black;
+        }
+    }
+}
+
+#experiment-discover {
+    img {
+        position: absolute;
+
+        &.banner {
+            top: -18%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+        }
+    }
+
+    .frame {
+        position: absolute;
+        top: 15%;
+        left: 14%;
+        background: url('#{$frame}bg-slide.png');
+        background-size: cover;
+        width: 72%;
+        height: 73%;
+
+        .feet {
+            position: absolute;
+            top: 27%;
+            left: 10%;
+            transition: top .5s;
+            background-image: url('#{$image}feet-a.png');
+            background-repeat: no-repeat;
+            background-size: contain;
+            width: 25%;
+            height: 44%;
+
+            &:hover {
+                background-image: url('#{$image}feet-b.png');
+                background-repeat: no-repeat;
+                background-size: contain;
+            }
+
+            &.HIGHLIGHTED {
+                top: 15%;
+
+                h3 {
+                    opacity: 1;
+                }
+            }
+        }
+
+        .ears {
+            position: absolute;
+            top: 27%;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: top .5s;
+            background-image: url('#{$image}ears-a.png');
+            background-repeat: no-repeat;
+            background-size: contain;
+            width: 25%;
+            height: 44%;
+
+            &:hover {
+                background-image: url('#{$image}ears-b.png');
+                background-repeat: no-repeat;
+                background-size: contain;
+            }
+
+            &.HIGHLIGHTED {
+                top: 15%;
+
+                h3 {
+                    opacity: 1;
+                }
+            }
+        }
+
+        .coat {
+            position: absolute;
+            top: 27%;
+            right: 10%;
+            transition: top .5s;
+            background-image: url('#{$image}coat-a.png');
+            background-repeat: no-repeat;
+            background-size: contain;
+            width: 25%;
+            height: 44%;
+
+            &:hover {
+                background-image: url('#{$image}coat-b.png');
+                background-repeat: no-repeat;
+                background-size: contain;
+            }
+
+            &.HIGHLIGHTED {
+                top: 15%;
+
+                h3 {
+                    opacity: 1;
+                }
+            }
+        }
+
+        h3 {
+            position: absolute;
+            top: 95%;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: opacity 1s ease-in;
+            opacity: 0;
+            width: 100%;
+            text-align: center;
+            color: $black;
+        }
+    }
+}
+
+#flip {
+    img {
+        position: absolute;
+
+        &.banner {
+            top: -12%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 65%;
+        }
+
+        &.flip {
+            top: 50%;
+            left: 31%;
+            transform: rotate(-180deg);
+            transition: opacity 1s, transform 1s;
+            opacity: 0;
+            width: 40%;
+        }
+    }
+
+    .frame {
+        position: absolute;
+        top: 15%;
+        left: 14%;
+        background: url('#{$frame}bg-slide.png');
+        background-size: cover;
+        width: 72%;
+        height: 73%;
+
+        h3 {
+            position: absolute;
+            top: 12%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            text-align: center;
+            color: $black;
+            font-size: 30px;
+        }
+    }
+
+    &.READY.OPEN {
+        &.COMPLETE {
+            img {
+                &.flip {
+                    transform: rotate(0deg);
+                    opacity: 1;
+                }
+            }
+        }
+    }
+}
+
+#quit {
+    .frame {
+        position: absolute;
+        top: 15%;
+        left: 14%;
+        background: url('#{$frame}bg-slide.png');
+        background-size: cover;
+        width: 72%;
+        height: 73%;
+
+        h2,
+        h3 {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: $black;
+        }
+
+        h2 {
+            top: 20%;
+        }
+
+        h3 {
+            top: 65%;
+        }
+
+        .quit-yes {
+            position: absolute;
+            bottom: -5%;
+            left: 22%;
+            background: url('#{$image}yes-a.png');
+            background-position: 0 0;
+            background-size: cover;
+            width: 21%;
+            height: 16%;
+
+            &:hover,
+            &:focus {
+                background: url('#{$image}yes-b.png');
+                background-position: 0 0;
+                background-size: cover;
+            }
+        }
+
+        .quit-no {
+            position: absolute;
+            bottom: -5%;
+            left: 57%;
+            background: url('#{$image}no-a.png');
+            background-position: 0 0;
+            background-size: cover;
+            width: 21%;
+            height: 16%;
+
+            &:hover,
+            &:focus {
+                background: url('#{$image}no-b.png');
+                background-position: 0 0;
+                background-size: cover;
+            }
+        }
+    }
+}
